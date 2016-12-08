@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class DebugRenderOptions : MonoBehaviour {
-
+  /*
 	public GameObject m_EnemyFovRenderer = null;
 	private bool m_EnemyFovVisible = false;
 	private MeshRenderer[] m_NoiseSources = null;
@@ -106,4 +106,5 @@ public class DebugRenderOptions : MonoBehaviour {
 			renderers[i].enabled = change;
 		}
 	}
+  */
 }

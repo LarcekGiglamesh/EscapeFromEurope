@@ -119,6 +119,7 @@ public class SteamVR_TestController : MonoBehaviour
 
 			foreach (var buttonId in axisIds)
 			{
+                
 				if (SteamVR_Controller.Input(index).GetTouchDown(buttonId))
 					Debug.Log(buttonId + " touch down");
 				if (SteamVR_Controller.Input(index).GetTouchUp(buttonId))
