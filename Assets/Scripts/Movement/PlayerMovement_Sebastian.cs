@@ -35,7 +35,7 @@ public class PlayerMovement_Sebastian : MonoBehaviour
       Vector3 movementZ = Vector3.zero;
 
       // if y > 0.1f
-      if (-axis.y >= 0.1f) // 55% cap
+      if (axis.y >= 0.25f) // 55% cap
       {
         // only forward movement
         movementZ = m_cameraEye.transform.forward * (-axis.y * 100.0f);
@@ -112,7 +112,7 @@ public class PlayerMovement_Sebastian : MonoBehaviour
     {
       this.transform.Translate(-1 * tCameraEye.forward * Time.deltaTime * m_acceleration, Space.World);
     }
-  } 
+  }
 
 }
 

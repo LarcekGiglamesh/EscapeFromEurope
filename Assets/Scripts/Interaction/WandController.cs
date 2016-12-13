@@ -3,6 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Valve.VR;
 
+// TODO:
+// Add raycast between controller and interaction item while isInteracting
+// if it does not hit the controller then stop interaction
+
 public class WandController : MonoBehaviour
 {
   private Valve.VR.EVRButtonId m_interactionButton = EVRButtonId.k_EButton_Grip;
@@ -13,30 +17,30 @@ public class WandController : MonoBehaviour
 
   void Update()
   {
-    //UpdateButtonState();
+    UpdateButtonState();
 
-    if (SteamVRManager.m_deviceRight.GetPress(m_interactionButton))
-    {
-      // is there already an interactionItem?
-      if (m_interactionItem)
-      {
-        // finish interaction
-        m_interactionItem.EndInteraction(this);
-        m_interactionItem = null;
-      }
-      else
-      {
-        // get new interaction item
-        UpdateNearestInteractionItem();
+    //if (SteamVRManager.m_deviceRight.GetPressDown(m_interactionButton) || SteamVRManager.m_deviceRight.GetPressDown(EVRButtonId.k_EButton_SteamVR_Trigger))
+    //{
+    //  // is there already an interactionItem?
+    //  if (m_interactionItem)
+    //  {
+    //    // finish interaction
+    //    m_interactionItem.EndInteraction(this);
+    //    m_interactionItem = null;
+    //  }
+    //  else
+    //  {
+    //    // get new interaction item
+    //    UpdateNearestInteractionItem();
 
-        // any item found we can interact with?
-        if (m_interactionItem)
-        {
-          // start interaction
-          m_interactionItem.BeginInteraction(this);
-        }
-      }
-    }
+    //    // any item found we can interact with?
+    //    if (m_interactionItem)
+    //    {
+    //      // start interaction
+    //      m_interactionItem.BeginInteraction(this);
+    //    }
+    //  }
+    //}
 
     //MoveAndRotateControllerJustForTest();
   }
@@ -121,19 +125,38 @@ public class WandController : MonoBehaviour
 
   void UpdateButtonState()
   {
-    bool currentState = SteamVRManager.m_deviceRight.GetPress(m_interactionButton);
+    bool currentState = SteamVRManager.m_deviceRight.GetPress(EVRButtonId.k_EButton_SteamVR_Trigger);
     //bool currentState2 = SteamVRManager.m_deviceRight.GetPress(EVRButtonId.k_EButton_SteamVR_Trigger);
 
     if (currentState != m_isButtonDown)
     {
       // state
       m_isButtonDown = currentState;
+      Debug.Log("State CHANGED to:" + m_isButtonDown.ToString());
       Test();
     }
   }
 
   void Test()
   {
+    // is there already an interactionItem?
+    if (m_interactionItem)
+    {
+      // finish interaction
+      m_interactionItem.EndInteraction(this);
+      m_interactionItem = null;
+    }
+    else
+    {
+      // get new interaction item
+      UpdateNearestInteractionItem();
 
+      // any item found we can interact with?
+      if (m_interactionItem)
+      {
+        // start interaction
+        m_interactionItem.BeginInteraction(this);
+      }
+    }
   }
 }
