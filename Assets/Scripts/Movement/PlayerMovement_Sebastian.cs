@@ -4,7 +4,6 @@ using Valve.VR;
 
 public class PlayerMovement_Sebastian : MonoBehaviour
 {
-
   public float m_acceleration = 0.3f;
   public float m_maxAcceleration = 2.0f;
   public GameObject m_cameraEye = null;
@@ -33,30 +32,44 @@ public class PlayerMovement_Sebastian : MonoBehaviour
     if (SteamVRManager.m_deviceLeft.GetTouch(SteamVR_Controller.ButtonMask.Touchpad))
     {
       Vector2 axis = SteamVRManager.m_deviceLeft.GetAxis(EVRButtonId.k_EButton_SteamVR_Touchpad);
-      
-      // Y-Axis on Touchpad is responsible for movement in z-direction
-      Vector3 movementZ = m_cameraEye.transform.forward * -axis.y;
-      movementZ.y = 0.0f;
-      movementZ.Normalize();
-      m_movement += movementZ * -1.0f;  // * -1.0f? I dont know...
+      Vector3 movementZ = Vector3.zero;
 
-      // X-Axis on Touchpad is responsible for movement in x-direction
-      if (Mathf.Abs(axis.x) > m_moveOnXOffset)
+      // if y > 0.1f
+      if (-axis.y >= 0.1f) // 55% cap
       {
-        if (axis.x > 0)
-        {
-          axis.x -= m_moveOnXOffset;
-        }
-        else
-        {
-          axis.x += m_moveOnXOffset;
-        }
+        // only forward movement
+        movementZ = m_cameraEye.transform.forward * (-axis.y * 100.0f);
+        movementZ.y = 0.0f;
+        m_movement += movementZ * -1.0f;  // * -1.0f? I dont know...
+      }
+      else
+      {
+        // Y-Axis on Touchpad is responsible for movement in z-direction
+        movementZ = m_cameraEye.transform.forward * (-axis.y * 100.0f);
+        movementZ.y = 0.0f;
+        //movementZ.Normalize();
+        m_movement += movementZ * -1.0f;  // * -1.0f? I dont know...
 
-        Vector3 movementX = m_cameraEye.transform.right * -axis.x;
-        movementX.y = 0.0f;
-        movementX.Normalize();
+        // X-Axis on Touchpad is responsible for movement in x-direction
+        if (Mathf.Abs(axis.x) > m_moveOnXOffset)
+        {
+          if (axis.x > 0)
+          {
+            axis.x -= m_moveOnXOffset;
+          }
+          else
+          {
+            axis.x += m_moveOnXOffset;
+          }
 
-        m_movement += movementX * -1.0f; // * -1.0f? I dont know...
+          Vector3 movementX = m_cameraEye.transform.right * (-axis.x * 100.0f);
+          movementX.y = 0.0f;
+          // x-axis movement only 50%
+          movementX *= 0.5f;
+          //movementX.Normalize();
+
+          m_movement += movementX * -1.0f; // * -1.0f? I dont know...
+        }
       }
 
       MoveThroughPhysics();
@@ -66,7 +79,7 @@ public class PlayerMovement_Sebastian : MonoBehaviour
   void MoveThroughPhysics()
   {
     // frame-independant movement
-    Vector3 playerMovement = m_movement * m_acceleration * 100.0f * Time.fixedDeltaTime;
+    Vector3 playerMovement = m_movement * m_acceleration * Time.fixedDeltaTime;
 
     // move camera (player)
     //m_rigidbody.MovePosition(this.transform.position + playerMovement);
